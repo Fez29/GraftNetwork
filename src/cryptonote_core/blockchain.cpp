@@ -794,8 +794,7 @@ difficulty_type Blockchain::get_difficulty_for_next_block()
   {
       return next_difficulty(timestamps, difficulties, target);
   }
-  // XXX be careful when merging it back to master! in mainnet its version 10
-  else if (version == 8 || version >= 12)
+  else if (version == 8 || version >= 10)
   {
       return next_difficulty_v8(timestamps, difficulties, target);
   }
@@ -1018,8 +1017,7 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   if (ideal_hardfork_version < 8) {
       LOG_PRINT_L2("old difficulty algo");
       result = next_difficulty(timestamps, cumulative_difficulties, target);
-      // XXX be careful when merging it back to master! in mainnet its version 10
-  } else if (ideal_hardfork_version == 8 || ideal_hardfork_version >= 12) {
+  } else if (ideal_hardfork_version == 8 || ideal_hardfork_version >= 10) {
       LOG_PRINT_L2("new difficulty algo");
       result = next_difficulty_v8(timestamps, cumulative_difficulties, target);
   } else {
@@ -4332,6 +4330,11 @@ void Blockchain::lock()
 void Blockchain::unlock()
 {
   m_blockchain_lock.unlock();
+}
+
+bool Blockchain::try_lock()
+{
+  return m_blockchain_lock.tryLock();
 }
 
 bool Blockchain::for_all_key_images(std::function<bool(const crypto::key_image&)> f) const
